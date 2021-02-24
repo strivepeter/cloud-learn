@@ -1,10 +1,10 @@
 ## Spring Cloud Eureka ：服务注册与发现
 Eureka是Netflix开源的一款提供服务注册和发现的产品，它提供了完整的Service Registry和Service Discovery实现。也是SpringCloud体系中最重要最核心的组件之一。
 
-#### 背景介绍
+### 背景介绍
 ~~# 后期补充~~
 
-#### Eureka简介
+### Eureka简介
 Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注册和发现。Eureka 采用了 C-S 的设计架构。
 * Eureka Server 作为服务注册功能的服务器，它是服务注册中心。而系统中的其他微服务，使用 Eureka 的客户端连接到 Eureka Server，并维持心跳连接。
 * 维护人员就可以通过 Eureka Server 来监控系统中各个微服务是否正常运行。
@@ -15,20 +15,25 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
   * 2、Service Provider：服务提供方，将自身服务注册到Eureka中，使其他服务可以找到。
   * 3、Service Consumer：服务消费方，从Eureka获取注册服务列表，从而能够消费服务。
   
-#### 搭建Eureka注册中心
+### 搭建Eureka注册中心
 我们以创建并运行Eureka注册中心来看看在IDEA中创建并运行SpringCloud应用的正确姿势。
-
-##### 使用IDEA来创建SpringCloud应用
-* ###### 创建一个mic-allen-iot模块，并使用Spring Initializer初始化一个SpringBoot项目
+* 开发工具 idea
+* Java版本 1.8
+* SpringBoot 版本 2.3.1.RELEASE
+* SpringCloud 版本 Hoxton.SR6
+#### 使用IDEA来创建SpringCloud应用
+* #### 方便学习创建一个cloud-learn的工程，后续会将源码放在GitHub上面。
 ![创建流程图]()
-* ###### 创建完成后会发现pom.xml文件中已经有了eureka-server的依赖
+* ##### 在刚才创建工程里面，创建一个eureka-learn模块，并使用Spring Initializer初始化一个SpringBoot项目
+![创建流程图]()
+* ##### 打开eureka-learn模块的pom.xml文件，会发现多了一个eureka-server的依赖
   ```maven
   <dependency>
       <groupId>org.springframework.cloud</groupId>
       <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
   </dependency>
   ```
-* ###### 在启动类上添加@EnableEurekaServer注解来启用Euerka注册中心功能
+* ##### 只要在启动类上添加@EnableEurekaServer注解，就启用eureka注册中心的功能
   ```java
   @EnableEurekaServer
   @SpringBootApplication
@@ -39,7 +44,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       }
   }
   ```
-* ###### 在配置文件application.yml中添加Eureka注册中心的配置
+* ##### 修改配置文件application.yml，添加eureka注册中心的相关配置
   ```yml
   server:
     port: 8001 #指定运行端口
@@ -55,11 +60,11 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
     server:
       enable-self-preservation: false #关闭保护模式
   ```
-* ###### 运行完成后访问地址http://localhost:8001/可以看到Eureka注册中心的界面
+* ##### 运行完成后访问地址http://localhost:8001/可以看到Eureka注册中心的界面
 * 如图所示：
 ![页面图](https://img-blog.csdnimg.cn/20210223174402220.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1N0cml2ZV9QZXRlcg==,size_16,color_FFFFFF,t_70)
-#### 搭建Eureka客户端
-* ###### 新建一个eureka-client模块，并在pom.xml中添加如下依赖
+#### 搭建Eureka客户端服务
+* ##### 在工程中新建eureka-client模块，并在pom.xml中添加如下依赖
   ```maven
   <dependency>
        <groupId>org.springframework.boot</groupId>
@@ -71,7 +76,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
        <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
   </dependency>
   ```
-* ###### 在启动类上添加@EnableDiscoveryClient注解表明是一个Eureka客户端
+* ##### 启动类上添加@EnableDiscoveryClient注解就表明是一个Eureka客户端
   ```java
   @EnableDiscoveryClient
   @SpringBootApplication
@@ -82,7 +87,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       }
   }
   ```
-* ###### 在配置文件application.yml中添加Eureka客户端的配置
+* ##### 在配置文件application.yml中添加Eureka客户端的相关配置
   ```yml
   server:
     port: 8101 #运行端口号
@@ -96,13 +101,11 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       service-url:
         defaultZone: http://localhost:8001/eureka/ #配置注册中心地址
   ```
-* ###### 查看注册中心http://localhost:8001/发现Eureka客户端已经成功注册
+* ##### 查看注册中心http://localhost:8001/发现Eureka客户端已经成功注册
 * 如图所示：
-![创建流程图]()
-
-#### 给Eureka注册中心添加认证
-
-* ###### 创建一个eureka-security-server模块，在pom.xml中添加以下依赖
+![注册效果图](https://img-blog.csdnimg.cn/20210224162450326.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1N0cml2ZV9QZXRlcg==,size_16,color_FFFFFF,t_70)
+#### 搭建带有认证的Eureka注册中心
+* ##### 创建一个eureka-security-server模块，在pom.xml中添加以下依赖
   ```maven
   <dependency>
       <groupId>org.springframework.cloud</groupId>
@@ -114,7 +117,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       <artifactId>spring-boot-starter-security</artifactId>
   </dependency>
   ```
-* ###### 添加application.yml配置文件
+* ##### 修改application.yml配置文件
   ```yml
   server:
     port: 8004
@@ -132,7 +135,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       fetch-registry: false
       register-with-eureka: false
   ```
-* ###### 添加Java配置WebSecurityConfig
+* ##### 因为引入spring-security依赖，需要添加Java配置WebSecurityConfig
   ```java
   @EnableWebSecurity
   public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -143,16 +146,17 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
       }
   }
   ```
-* ###### 运行eureka-security-server，访问http://localhost:8004发现需要登录认证
-
+* ##### 运行eureka-security-server，访问http://localhost:8004发现需要登录认证
+* 如图所示
+![需要登录认证的图片](https://img-blog.csdnimg.cn/2021022416265532.jpg?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L1N0cml2ZV9QZXRlcg==,size_16,color_FFFFFF,t_70)
 * ##### eureka-client注册到有登录认证的注册中心
 
-#### Eureka的常用配置
-* ###### 配置如下：
+#### 关于Eureka常用配置
+* ##### 配置如下：
   ```yml
   eureka:
-    client: #eureka客户端配置
-      register-with-eureka: true #是否将自己注册到eureka服务端上去
+    client:  #eureka客户端配置
+      register-with-eureka: true  #是否将自己注册到eureka服务端上去
       fetch-registry: true #是否获取eureka服务端上注册的服务列表
       service-url:
         defaultZone: http://localhost:8001/eureka/ # 指定注册中心地址
@@ -168,3 +172,7 @@ Spring Cloud 封装了 Netflix 公司开发的 Eureka 模块来实现服务注�
     server: #eureka服务端配置
       enable-self-preservation: false #关闭eureka服务端的保护机制
   ```
+#### 期望
+
+
+##### [项目源码地址，点击可以查看源码](https://github.com/strivepeter/cloud-learn)
