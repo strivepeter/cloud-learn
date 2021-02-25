@@ -6,7 +6,7 @@ spring:
   security:
     user:
       name: peter
-      password: peter
+      password: 20200413
 eureka:
   instance:
     hostname: localhost
